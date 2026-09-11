@@ -41,10 +41,17 @@ class MovieController extends Controller
             ->where('tmdb_id', $id)
             ->where('type', $type)
             ->first();
+        // all reviews
+        $reviews = Review::where('tmdb_id', $id)
+            ->where('type', $type)
+            ->with('user')
+            ->latest()
+            ->get();
 
         return view('movies.show', [
             'movie' => $movie,
-            'review' => $review
+            'review' => $review,
+            'reviews' => $reviews
         ]);
     }
 }

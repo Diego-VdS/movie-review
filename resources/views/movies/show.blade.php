@@ -75,15 +75,6 @@
                                     You already reviewed this title.
                                 </p>
 
-                                @if ($review->comment)
-                                    <div class="mt-4 bg-gray-800 rounded-xl p-4">
-
-                                        <p class="text-gray-300">
-                                            {{ $review->comment }}
-                                        </p>
-
-                                    </div>
-                                @endif
                             @else
                                 <div x-data="{ rating: 0, hover: 0, open: false }">
 
@@ -97,7 +88,6 @@
                                                     :class="(hover >= {{ $i }} || rating >= {{ $i }}) ?
                                                     'text-yellow-400' :
                                                     'text-gray-600'">
-                                                    ★
                                                 </span>
                                             </button>
                                         @endfor
@@ -139,10 +129,57 @@
 
                 </div>
 
+                </div>
+
+            <div class="mt-8 bg-gray-900 rounded-3xl p-8 shadow-xl border border-gray-800">
+
+                <h2 class="text-2xl font-bold text-white mb-6">
+                    Reviews
+                </h2>
+
+                @forelse ($reviews as $review)
+                    <div class="border-b border-gray-800 pb-6 mb-6 last:border-0 last:mb-0 last:pb-0">
+
+                        <div class="flex justify-between items-start">
+
+                            <div>
+                                <p class="text-white font-semibold">
+                                    {{ $review->user->name }}
+                                </p>
+
+                                <div class="flex gap-1 text-xl mt-1">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        <span
+                                            class="{{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-600' }}">
+                                            ★
+                                        </span>
+                                    @endfor
+                                </div>
+                            </div>
+
+                            <span class="text-gray-500 text-sm">
+                                {{ $review->created_at->format('d/m/Y') }}
+                            </span>
+
+                        </div>
+
+                        @if ($review->comment)
+                            <p class="text-gray-300 mt-4 leading-relaxed">
+                                {{ $review->comment }}
+                            </p>
+                        @endif
+
+                    </div>
+                @empty
+                    <p class="text-gray-400">
+                        No reviews yet.
+                    </p>
+                @endforelse
+
             </div>
 
-        </div>
+</div>
 
-    </div>
+</div>
 
 </x-app-layout>
