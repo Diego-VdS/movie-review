@@ -3,6 +3,7 @@
     <div class="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black py-12">
 
         <div class="max-w-6xl mx-auto px-6">
+
             <div class="mb-6">
                 <button
                     type="button"
@@ -11,17 +12,22 @@
                     <span class="text-xl">←</span> Back
                 </button>
             </div>
+
+            <!-- Movie details -->
             <div class="bg-gray-900 rounded-3xl p-8 shadow-xl border border-gray-800">
 
                 <div class="flex flex-col md:flex-row gap-8">
 
+                    <!-- Poster -->
                     <div class="md:w-1/3">
                         @if (!empty($movie['poster_path']))
-                            <img src="https://image.tmdb.org/t/p/w500{{ $movie['poster_path'] }}"
-                                class="rounded-2xl shadow-lg w-full">
+                        <img
+                            src="https://image.tmdb.org/t/p/w500{{ $movie['poster_path'] }}"
+                            class="rounded-2xl shadow-lg w-full">
                         @endif
                     </div>
 
+                    <!-- Movie information -->
                     <div class="md:w-2/3">
 
                         <h1 class="text-5xl font-extrabold text-white">
@@ -31,15 +37,15 @@
                         <div class="flex gap-4 mt-4 text-gray-400 text-sm">
 
                             @if (!empty($movie['release_date']))
-                                <span>
-                                    📅 {{ $movie['release_date'] }}
-                                </span>
+                            <span>
+                                📅 {{ $movie['release_date'] }}
+                            </span>
                             @endif
 
                             @if (!empty($movie['first_air_date']))
-                                <span>
-                                    📺 {{ $movie['first_air_date'] }}
-                                </span>
+                            <span>
+                                📺 {{ $movie['first_air_date'] }}
+                            </span>
                             @endif
 
                         </div>
@@ -52,6 +58,7 @@
                             {{ $movie['overview'] ?? 'No description available.' }}
                         </p>
 
+                        <!-- Your rating -->
                         <div class="mt-8">
 
                             <h3 class="text-white text-xl font-semibold mb-3">
@@ -60,66 +67,93 @@
 
                             @if ($review)
 
-                                <div class="flex gap-2 text-4xl">
+                            <!-- Existing review -->
+                            <div class="flex gap-2 text-4xl">
 
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        <span
-                                            class="{{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-600' }}">
-                                            ★
-                                        </span>
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <span class="{{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-600' }}">
+                                    ★
+                                    </span>
                                     @endfor
 
-                                </div>
+                            </div>
 
-                                <p class="text-gray-400 mt-3">
-                                    You already reviewed this title.
-                                </p>
+                            <p class="text-gray-400 mt-3">
+                                You already reviewed this title.
+                            </p>
 
                             @else
-                                <div x-data="{ rating: 0, hover: 0, open: false }">
 
-                                    <div class="flex gap-2 text-4xl cursor-pointer">
+                            <!-- New review -->
+                            <div x-data="{ rating: 0, hover: 0, open: false }">
 
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            <button type="button" @mouseenter="hover = {{ $i }}"
-                                                @mouseleave="hover = 0"
-                                                @click="rating = {{ $i }}; open = true">
-                                                <span
-                                                    :class="(hover >= {{ $i }} || rating >= {{ $i }}) ?
-                                                    'text-yellow-400' :
-                                                    'text-gray-600'">
-                                                </span>
-                                            </button>
+                                <div class="flex gap-2 text-4xl cursor-pointer">
+
+                                    @for ($i = 1; $i <= 5; $i++)
+
+                                        <button
+                                        type="button"
+                                        @mouseenter="hover = {{ $i }}"
+                                        @mouseleave="hover = 0"
+                                        @click="rating = {{ $i }}; open = true">
+
+                                        <span
+                                            :class="(hover >= {{ $i }} || rating >= {{ $i }})
+                                                    ? 'text-yellow-400'
+                                                    : 'text-gray-600'">
+                                            ★
+                                        </span>
+
+                                        </button>
+
                                         @endfor
 
-                                    </div>
+                                </div>
 
-                                    <div x-show="open" x-transition class="mt-6">
+                                <!-- Review form -->
+                                <div
+                                    x-show="open"
+                                    x-transition
+                                    class="mt-6">
 
-                                        <form method="POST" action="{{ route('reviews.store') }}">
+                                    <form
+                                        method="POST"
+                                        action="{{ route('reviews.store') }}">
 
-                                            @csrf
+                                        @csrf
 
-                                            <input type="hidden" name="tmdb_id" value="{{ $movie['id'] }}">
+                                        <input
+                                            type="hidden"
+                                            name="tmdb_id"
+                                            value="{{ $movie['id'] }}">
 
-                                            <input type="hidden" name="type"
-                                                value="{{ request()->route('type') }}">
+                                        <input
+                                            type="hidden"
+                                            name="type"
+                                            value="{{ request()->route('type') }}">
 
-                                            <input type="hidden" name="rating" x-model="rating">
+                                        <input
+                                            type="hidden"
+                                            name="rating"
+                                            x-model="rating">
 
-                                            <textarea name="comment" rows="4" placeholder="Write your opinion..."
-                                                class="w-full rounded-xl bg-gray-800 border border-gray-700 text-white p-4"></textarea>
+                                        <textarea
+                                            name="comment"
+                                            rows="4"
+                                            placeholder="Write your opinion..."
+                                            class="w-full rounded-xl bg-gray-800 border border-gray-700 text-white p-4"></textarea>
 
-                                            <button type="submit"
-                                                class="mt-4 bg-red-600 hover:bg-red-700 transition text-white px-6 py-3 rounded-xl font-semibold">
-                                                Save review
-                                            </button>
+                                        <button
+                                            type="submit"
+                                            class="mt-4 bg-red-600 hover:bg-red-700 transition text-white px-6 py-3 rounded-xl font-semibold">
+                                            Save review
+                                        </button>
 
-                                        </form>
-
-                                    </div>
+                                    </form>
 
                                 </div>
+
+                            </div>
 
                             @endif
 
@@ -129,8 +163,9 @@
 
                 </div>
 
-                </div>
+            </div>
 
+            <!-- Reviews -->
             <div class="mt-8 bg-gray-900 rounded-3xl p-8 shadow-xl border border-gray-800">
 
                 <h2 class="text-2xl font-bold text-white mb-6">
@@ -138,48 +173,92 @@
                 </h2>
 
                 @forelse ($reviews as $review)
-                    <div class="border-b border-gray-800 pb-6 mb-6 last:border-0 last:mb-0 last:pb-0">
 
-                        <div class="flex justify-between items-start">
+                <div class="border-b border-gray-800 pb-6 mb-6 last:border-0 last:mb-0 last:pb-0">
 
-                            <div>
-                                <p class="text-white font-semibold">
-                                    {{ $review->user->name }}
-                                </p>
+                    <div class="flex justify-between items-start">
 
-                                <div class="flex gap-1 text-xl mt-1">
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        <span
-                                            class="{{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-600' }}">
-                                            ★
-                                        </span>
+                        <div>
+
+                            <p class="text-white font-semibold">
+                                {{ $review->user->name }}
+                            </p>
+
+                            <!-- Review rating -->
+                            <div class="flex gap-1 text-xl mt-1">
+
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <span class="{{ $i <= $review->rating ? 'text-yellow-400' : 'text-gray-600' }}">
+                                    ★
+                                    </span>
                                     @endfor
-                                </div>
+
                             </div>
+
+                        </div>
+
+                        <div class="flex items-center gap-4">
 
                             <span class="text-gray-500 text-sm">
                                 {{ $review->created_at->format('d/m/Y') }}
                             </span>
 
+                            @auth
+                            @if (auth()->id() === $review->user_id)
+
+                            <a
+                                href="{{ route('reviews.edit', $review) }}"
+                                class="text-blue-400 hover:text-blue-300 transition"
+                                title="Edit review">
+                                ✏️
+                            </a>
+
+                            <form
+                                method="POST"
+                                action="{{ route('reviews.destroy', $review) }}"
+                                onsubmit="return confirm('Are you sure you want to delete this review?')">
+
+                                @csrf
+                                @method('DELETE')
+
+                                <button
+                                    type="submit"
+                                    class="text-red-400 hover:text-red-300 transition"
+                                    title="Delete review">
+                                    🗑️
+                                </button>
+
+                            </form>
+
+                            @endif
+                            @endauth
+
                         </div>
 
-                        @if ($review->comment)
-                            <p class="text-gray-300 mt-4 leading-relaxed">
-                                {{ $review->comment }}
-                            </p>
-                        @endif
-
                     </div>
-                @empty
-                    <p class="text-gray-400">
-                        No reviews yet.
+
+                    @if ($review->comment)
+
+                    <p class="text-gray-300 mt-4 leading-relaxed">
+                        {{ $review->comment }}
                     </p>
+
+                    @endif
+
+                </div>
+
+                @empty
+
+                <p class="text-gray-400">
+                    No reviews yet.
+                </p>
+
                 @endforelse
 
             </div>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
 </x-app-layout>

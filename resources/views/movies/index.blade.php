@@ -7,7 +7,7 @@
             <div class="mb-10">
 
                 <h1 class="text-5xl font-extrabold text-white tracking-tight">
-                    Movie Revieuwer
+                    Movie Reviewer
                 </h1>
 
                 <p class="text-gray-400 mt-3">
