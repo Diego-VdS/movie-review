@@ -14,9 +14,12 @@
 
                     @csrf
                     @method('PUT')
-
+                    <input
+                        type="hidden"
+                        name="search"
+                        value="{{ request('search') }}">
                     <!-- Rating -->
-                    <div class="mb-6">
+                    <div class="mb-6" x-data="{ rating: {{ $review->rating }} }">
 
                         <label class="block text-white font-semibold mb-3">
                             Rating
@@ -25,25 +28,21 @@
                         <div class="flex gap-2 text-4xl">
 
                             @for ($i = 1; $i <= 5; $i++)
-
                                 <button
                                 type="button"
-                                onclick="document.getElementById('rating').value = {{ $i }}"
-                                class="text-yellow-400 hover:text-yellow-300 transition">
-
+                                @click="rating = {{ $i }}"
+                                class="transition"
+                                :class="rating >= {{ $i }} ? 'text-yellow-400' : 'text-gray-600'">
                                 ★
-
                                 </button>
-
                                 @endfor
 
                         </div>
 
                         <input
                             type="hidden"
-                            id="rating"
                             name="rating"
-                            value="{{ $review->rating }}">
+                            x-model="rating">
 
                     </div>
 
@@ -77,7 +76,8 @@
                         <a
                             href="{{ route('movies.show', [
                                 'id' => $review->tmdb_id,
-                                'type' => $review->type
+                                'type' => $review->type,
+                                'search' => request('search')
                             ]) }}"
                             class="text-gray-400 hover:text-white transition">
                             Cancel

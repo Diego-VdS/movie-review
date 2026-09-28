@@ -1,16 +1,17 @@
 <x-app-layout>
-
+<p class="text-white">
+    Search: {{ request('search') }}
+</p>
     <div class="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-black py-12">
 
         <div class="max-w-6xl mx-auto px-6">
 
             <div class="mb-6">
-                <button
-                    type="button"
-                    onclick="history.back()"
-                    class="inline-flex items-center gap-2 text-gray-400 hover:text-white transition cursor-pointer">
-                    <span class="text-xl">←</span> Back
-                </button>
+            <a
+                href="{{ route('movies.index') }}?search={{ request('search') }}"
+                class="inline-flex items-center gap-2 text-gray-400 hover:text-white transition">
+                <span class="text-xl">←</span> Back
+            </a>
             </div>
 
             <!-- Movie details -->
@@ -207,11 +208,14 @@
                             @if (auth()->id() === $review->user_id)
 
                             <a
-                                href="{{ route('reviews.edit', $review) }}"
-                                class="text-blue-400 hover:text-blue-300 transition"
-                                title="Edit review">
-                                ✏️
-                            </a>
+    href="{{ route('reviews.edit', [
+        'review' => $review,
+        'search' => request('search')
+    ]) }}"
+    class="text-blue-400 hover:text-blue-300 transition"
+    title="Edit review">
+    ✏️
+</a>
 
                             <form
                                 method="POST"

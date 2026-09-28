@@ -70,6 +70,7 @@ class ReviewController extends Controller
         return redirect()->route('movies.show', [
             'id' => $review->tmdb_id,
             'type' => $review->type,
+            'search' => $request->search,
         ])->with('success', 'Review updated!');
     }
 

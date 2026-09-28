@@ -21,8 +21,17 @@ class MovieController extends Controller
             $movies = $this->tmdb->searchMovies(
                 $request->search
             );
-        }
 
+            foreach ($movies['results'] as &$movie) {
+                if (($movie['media_type'] ?? '') === 'person') {
+                    continue;
+                }
+            
+                $movie['average_rating'] = Review::where('tmdb_id', $movie['id'])
+                    ->where('type', $movie['media_type'])
+                    ->avg('rating');
+            }
+        }
         return view('movies.index', [
             'movies' => $movies
         ]);

@@ -31,90 +31,108 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
 
                 @foreach ($movies['results'] ?? [] as $movie)
-                    @if (($movie['media_type'] ?? '') === 'person')
-                        @continue
-                    @endif
+                @if (($movie['media_type'] ?? '') === 'person')
+                @continue
+                @endif
 
-                    <a href="{{ route('movies.show', ['id' => $movie['id'], 'type' => $movie['media_type']]) }}"
-                        class="block bg-gray-900 rounded-2xl overflow-hidden shadow-xl border border-gray-800 
+                <a href="{{ route('movies.show', ['id' => $movie['id'],'type' => $movie['media_type'],'search' => request('search')]) }}"
+                class="block bg-gray-900 rounded-2xl overflow-hidden shadow-xl border border-gray-800 
                 hover:-translate-y-2 transition duration-300">
 
-                        @if (!empty($movie['poster_path']))
-                            <div class="overflow-hidden">
+                    @if (!empty($movie['poster_path']))
+                    <div class="overflow-hidden">
 
-                                <img src="https://image.tmdb.org/t/p/w500{{ $movie['poster_path'] }}"
-                                    class="w-full h-72 object-cover hover:scale-110 transition duration-500">
+                        <img src="https://image.tmdb.org/t/p/w500{{ $movie['poster_path'] }}"
+                            class="w-full h-72 object-cover hover:scale-110 transition duration-500">
 
+                    </div>
+                    @endif
+
+                    <div class="p-4">
+
+                        <h2 class="text-white font-bold text-lg truncate"
+                            title="{{ $movie['title'] ?? $movie['name'] }}">
+                            {{ $movie['title'] ?? $movie['name'] }}
+                        </h2>
+
+                        <p class="text-red-400 text-xs mt-1 uppercase font-semibold">
+                            {{ ($movie['media_type'] ?? '') === 'tv' ? 'TV Series' : 'Movie' }}
+                        </p>
+
+                        @if (!empty($movie['average_rating']))
+                        <div class="flex items-center gap-2 mt-2">
+                            <div class="text-yellow-400">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if ($i <=round($movie['average_rating']))
+                                    ★
+                                    @else
+                                    ☆
+                                    @endif
+                                    @endfor
+                                    </div>
+
+                                    <span class="text-gray-400 text-xs">
+                                        {{ number_format($movie['average_rating'], 1) }}/5
+                                    </span>
                             </div>
-                        @endif
-
-                        <div class="p-4">
-
-                            <h2 class="text-white font-bold text-lg truncate"
-                                title="{{ $movie['title'] ?? $movie['name'] }}">
-                                {{ $movie['title'] ?? $movie['name'] }}
-                            </h2>
-
-                            <p class="text-red-400 text-xs mt-1 uppercase font-semibold">
-                                {{ ($movie['media_type'] ?? '') === 'tv' ? 'TV Series' : 'Movie' }}
-                            </p>
+                            @endif
 
                             <p class="text-gray-500 text-xs mt-1">
                                 {{ $movie['release_date'] ?? ($movie['first_air_date'] ?? 'Unknown date') }}
                             </p>
 
                             @if (!empty($movie['overview']))
-                                @php
-                                    $isLong = strlen($movie['overview']) > 80;
-                                @endphp
+                            @php
+                            $isLong = strlen($movie['overview']) > 80;
+                            @endphp
 
-                                <div x-data="{ open: false }">
+                            <div x-data="{ open: false }">
 
-                                    <p x-show="!open" class="text-gray-300 text-sm mt-3 leading-relaxed">
-                                        {{ Str::limit($movie['overview'], 80) }}
-                                    </p>
+                                <p x-show="!open" class="text-gray-300 text-sm mt-3 leading-relaxed">
+                                    {{ Str::limit($movie['overview'], 80) }}
+                                </p>
 
-                                    @if ($isLong)
-                                        <p x-show="open" class="text-gray-300 text-sm mt-3 leading-relaxed">
-                                            {{ $movie['overview'] }}
-                                        </p>
+                                @if ($isLong)
+                                <p x-show="open" class="text-gray-300 text-sm mt-3 leading-relaxed">
+                                    {{ $movie['overview'] }}
+                                </p>
 
-                                        <button @click="open = !open"
-                                            class="mt-3 text-red-400 hover:text-red-300 text-sm font-semibold">
+                                <button @click="open = !open"
+                                    class="mt-3 text-red-400 hover:text-red-300 text-sm font-semibold">
 
-                                            <span x-show="!open">
-                                                Read more
-                                            </span>
+                                    <span x-show="!open">
+                                        Read more
+                                    </span>
 
-                                            <span x-show="open">
-                                                Show less
-                                            </span>
+                                    <span x-show="open">
+                                        Show less
+                                    </span>
 
-                                        </button>
-                                    @endif
+                                </button>
+                                @endif
 
-                                </div>
+                            </div>
                             @endif
 
                         </div>
 
-                    </a>
+                </a>
                 @endforeach
 
             </div>
 
             @if (empty($movies['results']))
-                <div class="text-center text-gray-400 mt-20">
+            <div class="text-center text-gray-400 mt-20">
 
-                    <p class="text-2xl">
-                        🔎 Search for a movie or series
-                    </p>
+                <p class="text-2xl">
+                    🔎 Search for a movie or series
+                </p>
 
-                    <p class="mt-2">
-                        Try "Batman", "Breaking Bad" or "Avatar"
-                    </p>
+                <p class="mt-2">
+                    Try "Batman", "Breaking Bad" or "Avatar"
+                </p>
 
-                </div>
+            </div>
             @endif
 
         </div>
